@@ -352,17 +352,17 @@ endif()
 # Define static libraries qhullstatic (non-reentrant) and qhullstatic_r (reentrant)
 # ---------------------------------------
 
-add_library(${qhull_STATIC} STATIC ${libqhull_SOURCES})
-set_target_properties(${qhull_STATIC} PROPERTIES
+add_library(${qhull_SHARED} SHARED ${libqhull_SOURCES})
+set_target_properties(${qhull_SHARED} PROPERTIES
     VERSION ${qhull_VERSION})
 
-add_library(${qhull_STATICR} STATIC ${libqhullr_SOURCES})
-set_target_properties(${qhull_STATICR} PROPERTIES
+add_library(${qhull_SHAREDR} SHARED ${libqhullr_SOURCES})
+set_target_properties(${qhull_SHAREDR} PROPERTIES
     VERSION ${qhull_VERSION})
 
 if(UNIX)
-    target_link_libraries(${qhull_STATIC} m)
-    target_link_libraries(${qhull_STATICR} m)
+    target_link_libraries(${qhull_SHARED} m)
+    target_link_libraries(${qhull_SHAREDR} m)
 endif(UNIX)
 
 # ---------------------------------------
@@ -388,27 +388,33 @@ set(qvoronoi_SOURCES    src/qvoronoi/qvoronoi.c)
 set(qhalf_SOURCES       src/qhalf/qhalf.c)
 
 add_executable(qhull ${qhull_SOURCES})
-target_link_libraries(qhull ${qhull_STATICR})
+target_link_libraries(qhull ${qhull_SHAREDR})
 
 add_executable(rbox ${rbox_SOURCES})
-target_link_libraries(rbox ${qhull_STATIC})
+target_link_libraries(rbox ${qhull_SHARED})
 
 add_executable(qconvex ${qconvex_SOURCES})
-target_link_libraries(qconvex ${qhull_STATIC})
+target_link_libraries(qconvex ${qhull_SHARED})
 
 add_executable(qdelaunay ${qdelaunay_SOURCES})
-target_link_libraries(qdelaunay ${qhull_STATIC})
+target_link_libraries(qdelaunay ${qhull_SHARED})
 
 add_executable(qvoronoi ${qvoronoi_SOURCES})
-target_link_libraries(qvoronoi ${qhull_STATIC})
+target_link_libraries(qvoronoi ${qhull_SHARED})
 
 add_executable(qhalf ${qhalf_SOURCES})
-target_link_libraries(qhalf ${qhull_STATIC})
+target_link_libraries(qhalf ${qhull_SHARED})
 
 
 # ---------------------------------------
 # Define install
 # ---------------------------------------
+
+install(TARGETS ${qhull_SHARED}
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+
 
 install(TARGETS ${qhull_TARGETS_INSTALL}
         RUNTIME DESTINATION ${BIN_INSTALL_DIR}
